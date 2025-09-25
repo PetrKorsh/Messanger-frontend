@@ -29,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} flex min-h-screen flex-col bg-background antialiased`}
       >
-        <ProviderCompose>{children}</ProviderCompose>
+        <ProviderCompose >{children}</ProviderCompose>
         <Toaster />
       </body>
     </html>

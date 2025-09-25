@@ -9,15 +9,12 @@ import { cookies } from "next/headers";
 export async function deleteAction<queryType>(url: string, query?: queryType) {
   try {
     const CookieStore = await cookies();
+    const token = CookieStore.get("token")?.value;
 
-    const storedCookies = CookieStore.getAll();
-    const cookieHeader = storedCookies
-      .map(({ name, value }) => `${name}=${value}`)
-      .join("; ");
-
-    const headers: Record<string, string> = {
-      Cookie: cookieHeader,
-    };
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Cookie = `token=${token}`;
+    }
 
     const response = await axios.delete(`${process.env.API_URL}${url}`, {
       params: query,
@@ -29,8 +26,6 @@ export async function deleteAction<queryType>(url: string, query?: queryType) {
     console.error(
       "Ошибка сервера:",
       error.response?.data?.message || error.message,
-      "URL",
-      error.response?.config?.url
     );
 
     return {

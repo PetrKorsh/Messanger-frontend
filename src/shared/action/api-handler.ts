@@ -1,29 +1,20 @@
 import { ZodSchema } from "zod";
 
-/**
- * Обертка для работы с API
- * @returns {ReturnType} Распаршеный типизированный ответ.
- */
 export async function apiHandler<ReturnType>(
   apiFn: () => Promise<{
+    success: boolean;
     data: ReturnType | null;
-    error: any | null;
+    errors: { field: string; message: string }[] | null;
   }>,
-  schema: ZodSchema<ReturnType>,
+  schema: ZodSchema<ReturnType>
 ): Promise<ReturnType> {
-  try {
-    const result = await apiFn();
+  const result = await apiFn();
 
-    if ((result as any)?.error) {
-      throw new Error((result as any).error);
-    }
-
-    const parsedData = schema.parse(result.data);
-
-    return parsedData;
-  } catch (error: any) {
-    console.error("API Error:", error.message);
-
-    throw error;
+  if (!result.success) {
+    console.error("API Error:", result.errors);
+    throw result.errors; // пробрасываем массив ошибок
   }
+
+  // Валидируем через Zod
+  return schema.parse(result.data);
 }

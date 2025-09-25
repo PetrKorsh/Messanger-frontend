@@ -47,8 +47,8 @@ export const RegistrationForm = ({
       patronymic: "",
       bio: "",
       email: "",
-      password_hash: "",
-      profile_picture_url: "",
+      password: "",
+      profile_picture_url: "https://i.pinimg.com/originals/6b/5c/54/6b5c51.jpg",
     },
   });
 
@@ -62,8 +62,8 @@ export const RegistrationForm = ({
           ),
         responsePostMessage
       ),
-    onError: (error) => {
-      toast.error(error.message);
+    onError: (error: { field: string; message: string }[]) => {
+      error.forEach((e) => toast.error(`${e.message}`));
     },
     onSuccess: () => {
       toast.success("Добро пожаловать!");
@@ -163,7 +163,7 @@ export const RegistrationForm = ({
 
               <FormField
                 control={form.control}
-                name="password_hash"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Пароль</FormLabel>
@@ -202,6 +202,24 @@ export const RegistrationForm = ({
                       <Textarea
                         placeholder="Расскажите о себе..."
                         className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="profile_picture_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="petek@zombie.rzn"
                         {...field}
                       />
                     </FormControl>

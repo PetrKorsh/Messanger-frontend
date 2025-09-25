@@ -1,8 +1,10 @@
 "use server";
-
 import axios from "axios";
 import { cookies } from "next/headers";
 
+/**
+ * Функция для парса куков из header Set-Cookie
+ */
 function parseSetCookie(setCookieStr: string) {
   const parts = setCookieStr.split(";").map((part) => part.trim());
   const [key, value] = parts[0].split("=");
@@ -17,18 +19,18 @@ function parseSetCookie(setCookieStr: string) {
   return cookieObj;
 }
 
+/**
+ * Сервернный action для patch запросa
+ */
 export async function patchAction<dataType>(url: string, data?: dataType) {
   try {
     const CookieStore = await cookies();
+    const token = CookieStore.get("token")?.value;
 
-    const storedCookies = CookieStore.getAll();
-    const cookieHeader = storedCookies
-      .map(({ name, value }) => `${name}=${value}`)
-      .join("; ");
-
-    const headers: Record<string, string> = {
-      Cookie: cookieHeader,
-    };
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Cookie = `token=${token}`;
+    }
 
     const response = await axios.patch(`${process.env.API_URL}${url}`, data, {
       withCredentials: true,
@@ -53,12 +55,7 @@ export async function patchAction<dataType>(url: string, data?: dataType) {
 
     return { data: response.data, error: null };
   } catch (error: any) {
-    console.error(
-      "Ошибка сервера:",
-      error.response?.data?.message || error.message,
-      "URL",
-      error.response?.config?.url,
-    );
+    console.error("Ошибка сервера:", error.response?.config);
 
     return {
       data: null,

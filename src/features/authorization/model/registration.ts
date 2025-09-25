@@ -19,7 +19,7 @@ export const registrationSchema = z.object({
     .optional(),
   bio: z.string().max(256, "Длина не может быть более 256 символов").optional(),
   email: z.email().nonempty("Это поле обязательно"),
-  password_hash: z
+  password: z
     .string()
     .max(50, "Длина логина должна быть менее 50 символов")
     .nonempty("Это поле обязательно"),

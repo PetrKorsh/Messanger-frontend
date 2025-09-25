@@ -1,8 +1,10 @@
 "use server";
-
 import axios from "axios";
 import { cookies } from "next/headers";
 
+/**
+ * Функция для парса куков из header Set-Cookie
+ */
 function parseSetCookie(setCookieStr: string) {
   const parts = setCookieStr.split(";").map((part) => part.trim());
   const [key, value] = parts[0].split("=");
@@ -17,18 +19,18 @@ function parseSetCookie(setCookieStr: string) {
   return cookieObj;
 }
 
-export async function postAction<dataType>(url: string, data?: dataType) {
+/**
+ * Сервернный action для post запросa
+ */
+export async function postAction<DataType>(url: string, data?: DataType) {
   try {
     const CookieStore = await cookies();
+    const token = CookieStore.get("token")?.value;
 
-    const storedCookies = CookieStore.getAll();
-    const cookieHeader = storedCookies
-      .map(({ name, value }) => `${name}=${value}`)
-      .join("; ");
-
-    const headers: Record<string, string> = {
-      Cookie: cookieHeader,
-    };
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Cookie = `token=${token}`;
+    }
 
     const response = await axios.post(`${process.env.API_URL}${url}`, data, {
       withCredentials: true,
@@ -51,18 +53,32 @@ export async function postAction<dataType>(url: string, data?: dataType) {
       });
     }
 
-    return { data: response.data, error: null };
+    // Возвращаем структуру для успешного запроса
+    return {
+      success: true,
+      data: response.data,
+      errors: null,
+    };
   } catch (error: any) {
     console.error(
       "Ошибка сервера:",
-      error.response?.data?.message || error.message,
+      error.response?.data,
       "URL",
-      error.response?.config?.url,
+      error.response?.config?.url
     );
 
+    const apiErrors = error.response?.data?.errors;
+
     return {
+      success: false,
       data: null,
-      error: error.response?.data?.message || "Произошла ошибка на сервере",
+      errors: apiErrors || [
+        {
+          field: "server",
+          message:
+            error.response?.data?.message || "Произошла ошибка на сервере",
+        },
+      ],
     };
   }
 }

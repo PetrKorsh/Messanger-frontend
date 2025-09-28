@@ -14,9 +14,8 @@ interface User {
   firstname: string;
   lastname: string;
   patronymic: string;
-  description: string;
-  avatar: string;
-  role: string;
+  bio: string;
+  profile_picture_url: string;
   email: string;
 }
 

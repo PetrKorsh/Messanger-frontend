@@ -72,7 +72,7 @@ export const LoginForm = ({
     >
       <Card className="w-full">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Авторизация</CardTitle>
+          <CardTitle className="text-4xl font-bold">Авторизация</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -132,8 +132,7 @@ export const LoginForm = ({
               </div>
               <Button
                 type="submit"
-                variant="default"
-                className="w-full mt-0"
+                className="w-full mt-0 border-white border-[0.1px] hover:scale-[1.05] bg-transparent text-white hover:bg-transparent shadow-sm hover:shadow shadow-[#ffffff7c] "
                 disabled={login.isPending}
               >
                 {login.isPending ? "Войти..." : "Войти"}

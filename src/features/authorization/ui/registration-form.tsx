@@ -227,7 +227,16 @@ export const RegistrationForm = ({
                   </FormItem>
                 )}
               />
-
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  variant={"link"}
+                  className="mt-0 h-fit w-fit"
+                  onClick={() => push("/login")}
+                >
+                  Уже есть аккаунт?
+                </Button>
+              </div>
               <Button
                 type="submit"
                 variant="default"

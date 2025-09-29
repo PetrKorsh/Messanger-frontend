@@ -1,3 +1,5 @@
+"use client";
+
 import { ThemeButton } from "@/widget/button";
 import React from "react";
 
